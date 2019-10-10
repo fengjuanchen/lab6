@@ -1,3 +1,4 @@
+suppressWarnings(RNGversion("3.5.9"))
 set.seed(42)
 n <- 2000
 knapsack_objects <- data.frame(
@@ -7,9 +8,9 @@ knapsack_objects <- data.frame(
  # v=c(1,6,18,22,28,36)
 )
 # x,y,z for test
-x <- knapsack_objects[1:4,]
-y <- knapsack_objects[1:8,]
-z <- knapsack_objects[1:12,]
+#x <- knapsack_objects[1:4,]
+#y <- knapsack_objects[1:8,]
+#z <- knapsack_objects[1:12,]
 
 # caluculate all the vaules of value(i)/weight(i) of each item
 # order the data by value(i)/weight(i) decreasely
@@ -38,12 +39,14 @@ greedy_knapsack <- function(x,W){
     best_value <- best_value + new_data[i,2]
     max_weight <- max_weight - new_data[i,1]
     i <- i+1
+    if(i>nrow(new_data)) {break}  # if it is the end of the data,stop
   }
   # print(new_data)
   a <- which(best_items!=0)  # delete empty elements in vector best_items 
   best_items <- best_items[a]
   best_items <- new_data[best_items,3]  # the real item number in x
   best_items <- best_items[order(best_items)]  # output the item number increasely                                   
+  best_value <- round(best_value,0)
   result <- list(value=best_value,elements=best_items)
   return(result)
   

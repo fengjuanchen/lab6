@@ -1,3 +1,4 @@
+suppressWarnings(RNGversion("3.5.9"))
 set.seed(42)
 n <- 2000
 knapsack_objects <- data.frame(
@@ -7,16 +8,16 @@ knapsack_objects <- data.frame(
  # v=c(1,6,18,22,28,36)
 )
 # x,y,z for test
-x <- knapsack_objects[1:4,]
-y <- knapsack_objects[1:8,]
-z <- knapsack_objects[1:12,]
+#x <- knapsack_objects[1:4,]
+#y <- knapsack_objects[1:8,]
+#z <- knapsack_objects[1:12,]
 # enumerate all different combinations using a binary representation of 1 to 2^n
 # put all different combinations  in a matrix "combination"
 # store all value=1 in each line of  the matrix to vector a by command which()
 # calculate the corresponding weights and values in data.frame x using sum(x[a,1]) and sum(x[a,2])
 # store the maximum value when weight is less than W into a list "result"
-brute_force_knapsack <- function(x,W){
-  stopifnot(is.data.frame(x))
+brute_force_knapsack <- function(x,W,parallel=FALSE){
+ # stopifnot(is.data.frame(x))
   stopifnot(W>0)
   n <- nrow(x)
   combination <- matrix(nrow = 2^n,  ncol = n)
@@ -41,12 +42,22 @@ brute_force_knapsack <- function(x,W){
          best_value <- sum_value
          best_items <- a
          actual_weight <- sum_weight
-         result <- list(value=best_value,elements=best_items, weight=actual_weight)
-         }
+                  }
    }
+       
+    best_value <- round(best_value,0)
+    result <- list(value=best_value,elements=best_items)
+
    
+   if(parallel==TRUE){
+     #cores <- parallel::detectCores()
+    # cl <- makeCluster(cores,type = "PSOCK")
+     #result <- parLapply(cl, x, brute_force_knapsack,W)
+     #stopCluster(cl)
+     #result <- parallel::mclapply(x,brute_force_knapsack,W,mc.cores = cores)
+     
+     }
     return(result)
     
 }
-    
-    
+

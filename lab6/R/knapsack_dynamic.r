@@ -1,3 +1,7 @@
+
+#  dynamic programming method for 0-1 knapsack problem without recursive functions
+
+suppressWarnings(RNGversion("3.5.9"))
 set.seed(42)
 n <- 2000
 knapsack_objects <- data.frame(
@@ -6,9 +10,9 @@ knapsack_objects <- data.frame(
   # w=c(1,2,5,6,7,9) ,
   # v=c(1,6,18,22,28,36)
 )
-x <- knapsack_objects[1:4,]
-y <- knapsack_objects[1:8,]
-z <- knapsack_objects[1:12,]
+#x <- knapsack_objects[1:4,]
+#y <- knapsack_objects[1:8,]
+#z <- knapsack_objects[1:12,]
 
 # caluculate all the vaules of knapscak(n, W) of each situation 
 #   and store these value in a matrix nw
@@ -51,7 +55,6 @@ knapsack_dynamic <- function(x,W){
       j <- j-x[i-1, 1]
     }               
       i <- i-1
-    
   }
   
     a <- which(best_items!=0) # delete empty elements in vector best_items 
@@ -61,7 +64,9 @@ knapsack_dynamic <- function(x,W){
         b[i]=best_items[length(b)-i+1]
       }
     best_items <- b
-    result <- list(value=nw[n+1, max_weight+1],elements=best_items)
+    best_value <- nw[n+1, max_weight+1]
+    best_value <- round(best_value)
+    result <- list(value=best_value, elements=best_items)
     
   return(result)
 }

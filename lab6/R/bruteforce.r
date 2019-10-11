@@ -17,9 +17,19 @@ knapsack_objects <- data.frame(
 # calculate the corresponding weights and values in data.frame x using sum(x[a,1]) and sum(x[a,2])
 # store the maximum value when weight is less than W into a list "result"
 brute_force_knapsack <- function(x,W,parallel=FALSE){
- # stopifnot(is.data.frame(x))
+  stopifnot(is.data.frame(x))
   stopifnot(W>0)
   n <- nrow(x)
+  
+  n1 <- floor(n/2)    # for parallel, divide data for 4 parts, n1 is the half position
+  n2 <- floor(n1/2)     #  n2 is the half position of the fore half position
+  n3 <- floor((n+n1)/2)  # n3 is the half position of the back half position
+  if(parallel==TRUE){
+    cores <- parallel::detectCores()
+    y <- list(knapsack_objects[1:n2,],knapsack_objects[(n2+1):n1,],knapsack_objects[(n1+1):n3,],knapsack_objects[(n3+1):n,])
+    result <- parallel::mclapply(y,brute_force_knapsack,W,mc.cores = cores)
+  }
+  
   combination <- matrix(nrow = 2^n,  ncol = n)
   # combination[,] <- 0
   storebin <- vector(length = n)
@@ -49,14 +59,7 @@ brute_force_knapsack <- function(x,W,parallel=FALSE){
     result <- list(value=best_value,elements=best_items)
 
    
-   if(parallel==TRUE){
-     #cores <- parallel::detectCores()
-    # cl <- makeCluster(cores,type = "PSOCK")
-     #result <- parLapply(cl, x, brute_force_knapsack,W)
-     #stopCluster(cl)
-     #result <- parallel::mclapply(x,brute_force_knapsack,W,mc.cores = cores)
-     
-     }
+   
     return(result)
     
 }
